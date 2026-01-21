@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Поле чудес — дисплей</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Поле чудес — публичный дисплей</h1>
+      <span class="badge">Режим: Дисплей</span>
+    </header>
+    <main class="layout">
+      <section class="card">
+        <h2>Барабан</h2>
+        <div class="wheel-stage">
+          <div class="pointer"></div>
+          <div id="wheel" class="wheel"></div>
+        </div>
+        <div id="wheel-callout" class="callout">Ожидание вращения</div>
+      </section>
+
+      <section class="card">
+        <h2>Табло</h2>
+        <div id="category" class="muted"></div>
+        <div id="puzzle" class="puzzle-grid"></div>
+        <div id="hint" class="muted"></div>
+      </section>
+
+      <section class="card">
+        <h2>Счёт</h2>
+        <div id="scoreboard" class="scoreboard"></div>
+        <div class="status" id="status">Игра готова к старту.</div>
+      </section>
+    </main>
+    <footer class="ribbon">
+      <div>
+        <strong id="round">Раунд 1</strong>
+        <span id="player">Игрок 1</span>
+      </div>
+      <div>
+        <span id="last-action" class="muted">Последнее действие: —</span>
+      </div>
+    </footer>
+
+    <script type="module" src="shared.js"></script>
+    <script type="module" src="display.js"></script>
+  </body>
+</html>
