@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Поле чудес — ведущий</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Поле чудес — панель ведущего</h1>
+      <span class="badge">Режим: Ведущий</span>
+    </header>
+    <main class="layout host-layout">
+      <section class="card">
+        <h2>Управление игрой</h2>
+        <div class="controls">
+          <button id="spin" class="primary">Крутить барабан</button>
+          <button id="next-player" class="secondary">Следующий игрок</button>
+          <button id="undo" class="secondary">Отменить действие</button>
+          <div class="inline">
+            <input id="letter" maxlength="1" placeholder="Буква" />
+            <button id="guess">Назвать букву</button>
+          </div>
+          <div class="inline">
+            <input id="solve" placeholder="Решение (только ведущий)" />
+            <button id="mark-solved" class="secondary">Загадка решена</button>
+          </div>
+          <div class="inline">
+            <button id="bankrupt" class="secondary">Банкрот</button>
+            <button id="lose-turn" class="secondary">Переход хода</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Загадка</h2>
+        <div class="controls">
+          <input id="category-input" placeholder="Категория" />
+          <textarea id="puzzle-input" placeholder="Текст загадки"></textarea>
+          <input id="hint-input" placeholder="Подсказка" />
+          <label class="inline">
+            <input id="auto-hyphen" type="checkbox" checked />
+            <span class="muted">Авто-открывать дефисы и знаки</span>
+          </label>
+          <button id="set-puzzle" class="primary">Установить загадку</button>
+          <div class="notice" id="puzzle-warning" hidden>Проверьте ввод: загадка пуста.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Импорт / выбор</h2>
+        <div class="controls">
+          <input id="file-input" type="file" accept=".csv,.json" />
+          <select id="category-filter">
+            <option value="">Все категории</option>
+          </select>
+          <button id="random-puzzle" class="secondary">Случайная загадка</button>
+          <div id="import-status" class="muted">Файл не загружен.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Игроки и счёт</h2>
+        <div id="players" class="controls"></div>
+        <button id="add-player" class="secondary">Добавить игрока</button>
+      </section>
+
+      <section class="card">
+        <h2>Сектор барабана</h2>
+        <div id="sector" class="status">Последний сектор: —</div>
+        <div class="controls">
+          <label class="muted">Применить вручную:</label>
+          <div class="inline">
+            <input id="manual-points" type="number" placeholder="Очки" />
+            <button id="apply-points" class="secondary">Начислить очки</button>
+          </div>
+          <button id="take-prize" class="secondary">Приз — завершить раунд</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Подключение по сети</h2>
+        <div class="controls">
+          <div class="muted" id="host-url">URL хоста: —</div>
+          <div class="qr-wrap">
+            <img id="qr" alt="QR код для панели ведущего" />
+          </div>
+          <div class="muted">PIN ведущего: <strong id="pin"></strong></div>
+          <button id="copy-link" class="secondary">Скопировать ссылку</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="shared.js"></script>
+    <script type="module" src="host.js"></script>
+  </body>
+</html>

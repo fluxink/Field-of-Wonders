@@ -1,0 +1,13 @@
+{
+  "name": "field-of-wonders",
+  "version": "0.1.0",
+  "description": "Одномашинная игра «Поле чудес» для публичного дисплея и панели ведущего.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.17.0"
+  }
+}
