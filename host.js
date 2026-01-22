@@ -57,13 +57,25 @@ const defaultState = () => ({
       { type: "points", label: "300", value: 300 },
       { type: "points", label: "400", value: 400 },
       { type: "points", label: "500", value: 500 },
+      { type: "points", label: "600", value: 600 },
       { type: "points", label: "700", value: 700 },
+      { type: "points", label: "800", value: 800 },
+      { type: "points", label: "900", value: 900 },
+      { type: "points", label: "1000", value: 1000 },
+      { type: "points", label: "200", value: 200 },
+      { type: "points", label: "300", value: 300 },
+      { type: "points", label: "400", value: 400 },
+      { type: "points", label: "500", value: 500 },
+      { type: "points", label: "600", value: 600 },
+      { type: "prize", label: "Ключ" },
       { type: "bankrupt", label: "Банкрот" },
-      { type: "loseTurn", label: "Переход хода" },
+      { type: "loseTurn", label: "Переход" },
+      { type: "points", label: "700", value: 700 },
       { type: "prize", label: "Приз" }
     ],
     lastResult: null,
-    rotation: 0
+    rotation: 0,
+    spinDuration: 0
   },
   puzzle: {
     category: "",
@@ -143,7 +155,9 @@ const buildMaskedLayout = () => {
 const buildPublicState = () => ({
   wheel: {
     rotation: state.wheel.rotation,
-    lastResult: state.wheel.lastResult
+    lastResult: state.wheel.lastResult,
+    spinDuration: state.wheel.spinDuration,
+    sectors: state.wheel.sectors
   },
   puzzle: {
     category: state.puzzle.category,
@@ -299,9 +313,14 @@ const spinWheel = () => {
   const sectors = state.wheel.sectors;
   const index = Math.floor(Math.random() * sectors.length);
   const sector = sectors[index];
-  const rotation = state.wheel.rotation + 720 + Math.floor(Math.random() * 720) + index * (360 / sectors.length);
+  const segmentAngle = 360 / sectors.length;
+  const extraTurns = 3 + Math.floor(Math.random() * 3);
+  const landingAngle = index * segmentAngle + segmentAngle / 2;
+  const rotation = state.wheel.rotation + extraTurns * 360 + landingAngle;
+  const spinDuration = 6 + Math.random() * 4;
   state.wheel.rotation = rotation;
   state.wheel.lastResult = sector;
+  state.wheel.spinDuration = Number(spinDuration.toFixed(2));
   setLastAction(`Барабан: ${sector.label}.`);
   saveState();
   render();

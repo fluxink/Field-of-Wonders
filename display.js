@@ -5,6 +5,7 @@ const $ = (selector) => document.querySelector(selector);
 const elements = {
   wheel: $("#wheel"),
   callout: $("#wheel-callout"),
+  audio: $("#wheel-audio"),
   category: $("#category"),
   puzzle: $("#puzzle"),
   hint: $("#hint"),
@@ -16,13 +17,102 @@ const elements = {
 };
 
 let lastLayout = [];
+let lastRotation = 0;
+let spinTimeout = null;
+let lastSectorsSignature = "";
+
+const getSectorIcon = (sector) => {
+  if (sector.type === "bankrupt") {
+    return "💥";
+  }
+  if (sector.type === "loseTurn") {
+    return "⏭️";
+  }
+  if (sector.type === "prize") {
+    return sector.label === "Ключ" ? "🔑" : "🎁";
+  }
+  return "💰";
+};
+
+const buildWheelSectors = (sectors) => {
+  if (!sectors?.length) {
+    return;
+  }
+  const signature = sectors.map((sector) => `${sector.type}:${sector.label}`).join("|");
+  if (signature === lastSectorsSignature) {
+    return;
+  }
+  lastSectorsSignature = signature;
+
+  elements.wheel.innerHTML = "";
+  const segmentAngle = 360 / sectors.length;
+  const colors = ["#2c2f8a", "#f6f7ff"];
+  const gradientStops = sectors.map((_, index) => {
+    const start = index * segmentAngle;
+    const end = start + segmentAngle;
+    const color = colors[index % colors.length];
+    return `${color} ${start}deg ${end}deg`;
+  });
+  elements.wheel.style.background = `conic-gradient(${gradientStops.join(", ")})`;
+
+  sectors.forEach((sector, index) => {
+    const angle = index * segmentAngle + segmentAngle / 2;
+    const badge = document.createElement("div");
+    badge.className = "wheel-sector";
+    badge.style.setProperty("--angle", `${angle}deg`);
+    badge.innerHTML = `
+      <span class="wheel-icon">${getSectorIcon(sector)}</span>
+      <span>${sector.label}</span>
+    `;
+    elements.wheel.append(badge);
+  });
+
+  const center = document.createElement("div");
+  center.className = "wheel-center";
+  elements.wheel.append(center);
+};
+
+const stopWheelAudio = () => {
+  if (!elements.audio) {
+    return;
+  }
+  elements.audio.pause();
+  elements.audio.currentTime = 0;
+};
+
+const startSpin = (wheel) => {
+  if (elements.audio) {
+    elements.audio.currentTime = 0;
+    elements.audio.loop = true;
+    elements.audio.play().catch(() => null);
+  }
+  const durationMs = (wheel.spinDuration ?? 6) * 1000;
+  clearTimeout(spinTimeout);
+  spinTimeout = setTimeout(() => {
+    stopWheelAudio();
+    elements.callout.textContent = wheel.lastResult?.label ? `Сектор: ${wheel.lastResult.label}` : "Ожидание вращения";
+    spinTimeout = null;
+  }, durationMs);
+};
 
 const renderWheel = (wheel) => {
   if (!wheel) {
     return;
   }
+  buildWheelSectors(wheel.sectors);
+  elements.wheel.style.setProperty("--spin-duration", `${wheel.spinDuration ?? 6}s`);
   elements.wheel.style.transform = `rotate(${wheel.rotation}deg)`;
-  elements.callout.textContent = wheel.lastResult?.label ? `Сектор: ${wheel.lastResult.label}` : "Ожидание вращения";
+
+  if (wheel.rotation !== lastRotation) {
+    elements.callout.textContent = "Вращение...";
+    startSpin(wheel);
+    lastRotation = wheel.rotation;
+    return;
+  }
+
+  if (!spinTimeout) {
+    elements.callout.textContent = wheel.lastResult?.label ? `Сектор: ${wheel.lastResult.label}` : "Ожидание вращения";
+  }
 };
 
 const renderPuzzle = (puzzle) => {
